@@ -1,27 +1,22 @@
-{{#each this}}
-  <h1 class='card__title'>{{name}}</h1>
+<div class='photo-card'>
+  <img src='' alt='' />
 
-  <div class='card__wrapper'>
-    <ul>
-      <li class='list card__item'>
-        <span class='card__text'>Capital:</span>
-        {{capital}}
-      </li>
-      <li class='list card__item'>
-        <span class='card__text'>Population:</span>
-        {{population}}
-      </li>
-      <li class='list card__item'>
-        <span class='card__text'>Languages:</span>
-        <ul class='card__list'>
-          {{#each languages}}
-            <li class='card__item'>{{this.name}}</li>
-          {{/each}}
-        </ul>
-      </li>
-    </ul>
-    <div class='card__image'>
-      <img src='{{flag}}' alt='{{name}}' />
-    </div>
+  <div class='stats'>
+    <p class='stats-item'>
+      <i class='material-icons'>thumb_up</i>
+      1108
+    </p>
+    <p class='stats-item'>
+      <i class='material-icons'>visibility</i>
+      320321
+    </p>
+    <p class='stats-item'>
+      <i class='material-icons'>comment</i>
+      129
+    </p>
+    <p class='stats-item'>
+      <i class='material-icons'>cloud_download</i>
+      176019
+    </p>
   </div>
-{{/each}}
+</div>
