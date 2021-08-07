@@ -13,11 +13,18 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   </head>
   <body>
-    <ul class="gallery">
-      <!-- Список <li> с карточками изображений -->
-    </ul>
+    <div class="container">
+      <form class="search-form" id="search-form">
+        <input type="text" name="query" autocomplete="off" placeholder="Search images..." />
+      </form>
+
+      <button type="button" id="load-more">Загрузить ещё</button>
+
+      <ul class="gallery list js-gallery">
+        <!-- Список <li> с карточками изображений -->
+      </ul>
+    </div>
 
     <script src="./index.js"></script>
-    <script src="./js/imageSearch.js"></script>
   </body>
 </html>

@@ -1,5 +1,38 @@
-import fetchImage from './apiService';
+import FetchImageApi from './apiService';
+import imageCardTemplate from '../templates/image-card.hbs';
 
-let page = null;
+const imageSearch = new FetchImageApi();
 
-console.log(fetchImage('astra', 2).then(data => console.log(data.hits)));
+const Refs = {
+  search: document.querySelector('#search-form'),
+  gallery: document.querySelector('.js-gallery'),
+  loadMoreBtn: document.querySelector('#load-more'),
+};
+
+function onSearch(e) {
+  e.preventDefault();
+
+  imageSearch.query = e.currentTarget.elements.query.value;
+  imageSearch.resetPage();
+  clearImagesContainer();
+  fetchImages();
+}
+
+function fetchImages() {
+  imageSearch.fetchImage().then(imagesMarkUp);
+}
+
+function onLoadMoreImages() {
+  imageSearch.fetchImage().then(imagesMarkUp);
+}
+
+Refs.search.addEventListener('submit', onSearch);
+Refs.loadMoreBtn.addEventListener('click', onLoadMoreImages);
+
+function imagesMarkUp(images) {
+  Refs.gallery.insertAdjacentHTML('beforeend', imageCardTemplate(images));
+}
+
+function clearImagesContainer() {
+  Refs.gallery.innerHTML = '';
+}
