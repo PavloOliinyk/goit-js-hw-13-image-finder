@@ -14,14 +14,15 @@ const Refs = getRefs();
 
 function onSearch(e) {
   e.preventDefault();
-  const request = e.currentTarget.elements.query.value;
 
-  if (request === '') {
+  const query = e.currentTarget.elements.query.value;
+  imageSearch.query = query;
+
+  if (query === '') {
     noticeError();
     return;
   }
 
-  imageSearch.query = request;
   imageSearch.resetPage();
   clearImagesContainer();
   fetchImages();
@@ -55,13 +56,21 @@ function clearImagesContainer() {
 }
 
 function onShowModal(e) {
+  const target = e.target.tagName;
   const modalImage = e.target.dataset.source;
 
-  const instance = basicLightbox.create(`
-      <img src=${modalImage} width="800" height="600">
-  `);
+  if (target !== 'IMG') {
+    return;
+  }
 
-  instance.show();
+  appendModalImage(modalImage);
 }
 
 Refs.gallery.addEventListener('click', onShowModal);
+
+function appendModalImage(modalImage) {
+  const instance = basicLightbox.create(`
+      <img src=${modalImage} width="800" height="600">
+  `);
+  instance.show();
+}

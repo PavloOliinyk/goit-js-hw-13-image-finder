@@ -1,3 +1,10 @@
+@import 'basiclightbox/src/styles/main';
+
+$basicLightbox__background: rgba(0, 0, 0, 0.8); // Background color
+$basicLightbox__zIndex: 1000; // Stack order
+$basicLightbox__duration: 0.4s; // Transition duration
+$basicLightbox__timing: ease; // Transition timing
+
 img {
   display: block;
   max-width: 100%;
