@@ -29,6 +29,8 @@ ul {
   flex-wrap: wrap;
   margin-left: -30px;
   margin-top: -30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
   align-items: flex-start;
 }
 
@@ -38,13 +40,14 @@ ul {
   margin-left: 30px;
   margin-top: 30px;
   flex-basis: calc(100% / 4 - 30px);
+
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.3);
 }
 
 .stats {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #eeeeee;
-  border-left: 1px solid #eeeeee;
-  border-right: 1px solid #eeeeee;
+  padding: 5px;
 }
