@@ -8,6 +8,7 @@ require('default-passive-events');
 import * as basicLightbox from 'basiclightbox';
 
 setDefaultsDelay(2000);
+
 const imageSearch = new FetchImageApi();
 
 const Refs = getRefs();
@@ -37,6 +38,7 @@ function fetchImages() {
 
     appendImagesMarkUp(images);
     noticeSuccess();
+    observer.observe(Refs.sentinel);
   });
 }
 
@@ -74,3 +76,18 @@ function appendModalImage(modalImage) {
   `);
   instance.show();
 }
+
+const onEntry = entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && imageSearch.query !== '') {
+      imageSearch.fetchImage().then(images => {
+        appendImagesMarkUp(images);
+        imageSearch.incrementPage();
+      });
+    }
+  });
+};
+
+const observer = new IntersectionObserver(onEntry, {
+  rootMargin: '300px',
+});
