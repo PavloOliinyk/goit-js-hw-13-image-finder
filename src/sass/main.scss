@@ -5,6 +5,10 @@ $basicLightbox__zIndex: 1000; // Stack order
 $basicLightbox__duration: 0.4s; // Transition duration
 $basicLightbox__timing: ease; // Transition timing
 
+body {
+  background-color: aliceblue;
+}
+
 img {
   display: block;
   width: 100%;
@@ -53,6 +57,7 @@ ul {
   margin-top: 30px;
   flex-basis: calc(100% / 4 - 30px);
   min-height: 270px;
+  background-color: floralwhite;
 
   border: 1px solid #ccc;
   box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.3);

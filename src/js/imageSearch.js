@@ -10,8 +10,21 @@ import * as basicLightbox from 'basiclightbox';
 setDefaultsDelay(2000);
 
 const imageSearch = new FetchImageApi();
-
+const observer = new IntersectionObserver(onEntry, {
+  rootMargin: '300px',
+});
 const Refs = getRefs();
+
+function onEntry(entries) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && imageSearch.query !== '') {
+      imageSearch.fetchImage().then(images => {
+        appendImagesMarkUp(images);
+        imageSearch.incrementPage();
+      });
+    }
+  });
+}
 
 function onSearch(e) {
   e.preventDefault();
@@ -42,12 +55,7 @@ function fetchImages() {
   });
 }
 
-function onLoadMoreImages() {
-  imageSearch.fetchImage().then(appendImagesMarkUp);
-}
-
 Refs.search.addEventListener('submit', onSearch);
-Refs.loadMoreBtn.addEventListener('click', onLoadMoreImages);
 
 function appendImagesMarkUp(images) {
   Refs.gallery.insertAdjacentHTML('beforeend', imageCardTemplate(images));
@@ -76,18 +84,3 @@ function appendModalImage(modalImage) {
   `);
   instance.show();
 }
-
-const onEntry = entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting && imageSearch.query !== '') {
-      imageSearch.fetchImage().then(images => {
-        appendImagesMarkUp(images);
-        imageSearch.incrementPage();
-      });
-    }
-  });
-};
-
-const observer = new IntersectionObserver(onEntry, {
-  rootMargin: '300px',
-});
