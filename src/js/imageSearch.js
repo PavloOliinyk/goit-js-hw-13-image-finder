@@ -3,52 +3,27 @@ import '@pnotify/core/dist/BrightTheme.css';
 import FetchImageApi from './apiService';
 import imageCardTemplate from '../templates/image-card.hbs';
 import getRefs from './refs';
-import { noticeError, noticeSuccess, setDefaultsDelay } from './notifications';
+import appendModalImage from './basicLightBox';
+import { noticeError, noticeSuccess, setDefaultsDelay, noticeFetchTrouble } from './notifications';
 require('default-passive-events');
-import * as basicLightbox from 'basiclightbox';
-
-// import React, {Component} from 'react'
-// import ScrollButton from 'react-scroll-button'
-
-// class ScrollComponent extends Component {
-//     render() {
-//         return (
-//             <ScrollButton 
-//                 behavior={'smooth'} 
-//                 buttonBackgroundColor={'red'}
-//                 iconType={'arrow-up'}
-//                 style= {{fontSize: '24px'}}
-//             />
-//         );
-//     }
-// }
-
-// npm i react-scroll-button
 
 setDefaultsDelay(2000);
-
 const imageSearch = new FetchImageApi();
 const observer = new IntersectionObserver(onEntry, {
-  rootMargin: '300px',
+  // rootMargin: '-100px',
+  threshold: 0.2,
 });
 const Refs = getRefs();
 
-function onEntry(entries) {
-  entries.forEach(entry => {
-    if (entry.isIntersecting && imageSearch.query !== '') {
-      imageSearch.fetchImage().then(images => {
-        appendImagesMarkUp(images);
-        imageSearch.incrementPage();
-      });
-    }
-  });
-}
+Refs.search.addEventListener('submit', onSearch);
+Refs.gallery.addEventListener('click', onShowModal);
 
 function onSearch(e) {
   e.preventDefault();
 
   const query = e.currentTarget.elements.query.value;
   imageSearch.query = query;
+  showDots('block');
 
   if (query === '') {
     noticeError();
@@ -61,19 +36,22 @@ function onSearch(e) {
 }
 
 function fetchImages() {
-  imageSearch.fetchImage().then(images => {
-    if (images.length < 1) {
-      noticeError();
-      return;
-    }
+  imageSearch
+    .fetchImage()
+    .then(images => {
+      if (images.length < 1) {
+        showDots('none');
+        noticeError();
+        showFinalText();
+        return;
+      }
 
-    appendImagesMarkUp(images);
-    noticeSuccess();
-    observer.observe(Refs.sentinel);
-  });
+      appendImagesMarkUp(images);
+      noticeSuccess();
+      observer.observe(Refs.observer);
+    })
+    .catch(noticeFetchTrouble);
 }
-
-Refs.search.addEventListener('submit', onSearch);
 
 function appendImagesMarkUp(images) {
   Refs.gallery.insertAdjacentHTML('beforeend', imageCardTemplate(images));
@@ -83,10 +61,30 @@ function clearImagesContainer() {
   Refs.gallery.innerHTML = '';
 }
 
+function onEntry(entries) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && imageSearch.query !== '') {
+      imageSearch
+        .fetchImage()
+        .then(images => {
+          if (images.length < 1) {
+            showDots('none');
+            noticeError();
+            showFinalText();
+            return;
+          }
+
+          appendImagesMarkUp(images);
+          imageSearch.incrementPage();
+        })
+        .catch(noticeFetchTrouble);
+    }
+  });
+}
+
 function onShowModal(e) {
   const target = e.target.tagName;
   const modalImage = e.target.dataset.source;
-
   if (target !== 'IMG') {
     return;
   }
@@ -94,11 +92,13 @@ function onShowModal(e) {
   appendModalImage(modalImage);
 }
 
-Refs.gallery.addEventListener('click', onShowModal);
+function showFinalText() {
+  const markup = `<p class="page-status">End of content</p>
+                  <p class="page-status">No more pages to load</p>`;
 
-function appendModalImage(modalImage) {
-  const instance = basicLightbox.create(`
-      <img src=${modalImage} width="800" height="600">
-  `);
-  instance.show();
+  document.body.insertAdjacentHTML('beforeend', markup);
+}
+
+function showDots(value) {
+  Refs.dots.style.display = `${value}`;
 }

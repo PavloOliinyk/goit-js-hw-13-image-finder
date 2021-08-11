@@ -1,4 +1,4 @@
-import { success, error, defaults } from '@pnotify/core';
+import { success, error, defaults, notice } from '@pnotify/core';
 
 function noticeError() {
   error({
@@ -18,4 +18,11 @@ function setDefaultsDelay(delay) {
   defaults.delay = delay;
 }
 
-export { noticeError, noticeSuccess, setDefaultsDelay };
+function noticeFetchTrouble() {
+  notice({
+    title: 'Warning',
+    text: 'Oooops, something went wrong:(',
+  });
+}
+
+export { noticeError, noticeSuccess, setDefaultsDelay, noticeFetchTrouble };
