@@ -7,6 +7,24 @@ import { noticeError, noticeSuccess, setDefaultsDelay } from './notifications';
 require('default-passive-events');
 import * as basicLightbox from 'basiclightbox';
 
+// import React, {Component} from 'react'
+// import ScrollButton from 'react-scroll-button'
+
+// class ScrollComponent extends Component {
+//     render() {
+//         return (
+//             <ScrollButton 
+//                 behavior={'smooth'} 
+//                 buttonBackgroundColor={'red'}
+//                 iconType={'arrow-up'}
+//                 style= {{fontSize: '24px'}}
+//             />
+//         );
+//     }
+// }
+
+// npm i react-scroll-button
+
 setDefaultsDelay(2000);
 
 const imageSearch = new FetchImageApi();
