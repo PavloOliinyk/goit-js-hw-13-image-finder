@@ -1,4 +1,4 @@
-import { success, error, defaults, notice } from '@pnotify/core';
+import { success, error, info, defaults, notice } from '@pnotify/core';
 
 function noticeError() {
   error({
