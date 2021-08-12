@@ -7,6 +7,13 @@ function noticeError() {
   });
 }
 
+function noticeInfo() {
+  info({
+    title: 'Information',
+    text: 'There are no more content to show. Enter new query to search',
+  });
+}
+
 function noticeSuccess() {
   success({
     title: 'Success',
@@ -25,4 +32,4 @@ function noticeFetchTrouble() {
   });
 }
 
-export { noticeError, noticeSuccess, setDefaultsDelay, noticeFetchTrouble };
+export { noticeError, noticeSuccess, noticeInfo, setDefaultsDelay, noticeFetchTrouble };
