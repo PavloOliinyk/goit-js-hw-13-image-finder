@@ -4,7 +4,7 @@ import FetchImageApi from './apiService';
 import imageCardTemplate from '../templates/image-card.hbs';
 import getRefs from './refs';
 import appendModalImage from './basicLightBox';
-import { noticeError, noticeSuccess, setDefaultsDelay, noticeFetchTrouble } from './notifications';
+import { noticeError, noticeSuccess, noticeInfo, setDefaultsDelay, noticeFetchTrouble } from './notifications';
 require('default-passive-events');
 
 setDefaultsDelay(2000);
@@ -69,7 +69,7 @@ function onEntry(entries) {
         .then(images => {
           if (images.length < 1) {
             showDots('none');
-            noticeError();
+            noticeInfo();
             showFinalText();
             return;
           }
