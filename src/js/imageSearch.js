@@ -41,7 +41,7 @@ function fetchImages() {
     .then(images => {
       if (images.length < 1) {
         showDots('none');
-        noticeError();
+        noticeInfo();
         showFinalText();
         return;
       }
