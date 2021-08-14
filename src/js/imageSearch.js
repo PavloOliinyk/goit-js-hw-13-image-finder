@@ -4,14 +4,20 @@ import FetchImageApi from './apiService';
 import imageCardTemplate from '../templates/image-card.hbs';
 import getRefs from './refs';
 import appendModalImage from './basicLightBox';
-import { noticeError, noticeSuccess, noticeInfo, setDefaultsDelay, noticeFetchTrouble } from './notifications';
+import {
+  noticeError,
+  noticeSuccess,
+  noticeInfo,
+  setDefaultsDelay,
+  noticeFetchTrouble,
+} from './notifications';
 require('default-passive-events');
 
 setDefaultsDelay(2000);
 const imageSearch = new FetchImageApi();
 const observer = new IntersectionObserver(onEntry, {
-  // rootMargin: '-100px',
-  threshold: 0.2,
+  rootMargin: '250px',
+  // threshold: 0.2,
 });
 const Refs = getRefs();
 
@@ -24,7 +30,7 @@ function onSearch(e) {
   const query = e.currentTarget.elements.query.value;
   imageSearch.query = query;
   showDots('block');
-
+  clearPageLimitStatus();
   if (query === '') {
     noticeError();
     return;
@@ -35,22 +41,26 @@ function onSearch(e) {
   fetchImages();
 }
 
-function fetchImages() {
-  imageSearch
-    .fetchImage()
-    .then(images => {
-      if (images.length < 1) {
-        showDots('none');
-        noticeInfo();
-        showFinalText();
-        return;
-      }
+async function fetchImages() {
+  try {
+    const fetchResult = await imageSearch.fetchImage();
 
-      appendImagesMarkUp(images);
-      noticeSuccess();
-      observer.observe(Refs.observer);
-    })
-    .catch(noticeFetchTrouble);
+    // if (fetchResult.length < 1) {
+    //   showDots('none');
+    //   noticeInfo();
+    //   showFinalText();
+    //   return;
+    // }
+
+    appendImagesMarkUp(fetchResult);
+    // setTimeout(lazyLoad, 250);
+    lazyLoad();
+    noticeSuccess();
+    observer.observe(Refs.observer);
+  } catch (error) {
+    console.error(error);
+    noticeFetchTrouble();
+  }
 }
 
 function appendImagesMarkUp(images) {
@@ -59,6 +69,10 @@ function appendImagesMarkUp(images) {
 
 function clearImagesContainer() {
   Refs.gallery.innerHTML = '';
+}
+
+function clearPageLimitStatus() {
+  Refs.pageLimitMessage.innerHTML = '';
 }
 
 function onEntry(entries) {
@@ -71,10 +85,15 @@ function onEntry(entries) {
             showDots('none');
             noticeInfo();
             showFinalText();
+            observer.unobserve(Refs.observer);
             return;
           }
 
           appendImagesMarkUp(images);
+          // setTimeout(lazyLoad, 250);
+          console.time(lazyLoad);
+          lazyLoad();
+          console.timeEnd(lazyLoad);
           imageSearch.incrementPage();
         })
         .catch(noticeFetchTrouble);
@@ -96,9 +115,22 @@ function showFinalText() {
   const markup = `<p class="page-status">End of content</p>
                   <p class="page-status">No more pages to load</p>`;
 
-  document.body.insertAdjacentHTML('beforeend', markup);
+  Refs.pageLimitMessage.insertAdjacentHTML('beforeend', markup);
 }
 
 function showDots(value) {
   Refs.dots.style.display = `${value}`;
+}
+
+function lazyLoad() {
+  const cardImages = document.querySelectorAll('.fetch');
+
+  cardImages.forEach(image => {
+    image.src = image.dataset.src;
+    image.classList.remove('fetch');
+
+    image.addEventListener('load', () => {
+      image.classList.add('is-loaded');
+    });
+  });
 }

@@ -7,15 +7,13 @@ export default class FetchImageApi {
     this.searchQuery = '';
   }
 
-  fetchImage() {
-    return fetch(
+  async fetchImage() {
+    const res = await fetch(
       `${BASE_URL}/?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=12&key=${KEY}`,
-    )
-      .then(response => response.json())
-      .then(({ hits }) => {
-        this.incrementPage();
-        return hits;
-      });
+    );
+    const { hits } = await res.json();
+    this.incrementPage();
+    return hits;
   }
 
   get query() {
